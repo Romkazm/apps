@@ -32,8 +32,17 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <searchBar key="tableHeaderView" contentMode="redraw" id="CAU-78-9Cv">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="vXZ-lx-hvc" id="Dw7-TF-KuD"/>
+                                    </connections>
+                                </searchBar>
                                 <connections>
                                     <outlet property="dataSource" destination="vXZ-lx-hvc" id="RAi-QG-Amf"/>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="Peh-UM-TgA"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -41,10 +50,19 @@
                     </view>
                     <navigationItem key="navigationItem" title="100 top paid apps" id="cad-4S-8Mm"/>
                     <connections>
+                        <outlet property="searchDisplayController" destination="vhs-oV-Ot7" id="2IN-yI-dJb"/>
                         <outlet property="tableView" destination="L9s-iZ-3Vp" id="QMY-yC-jty"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="vhs-oV-Ot7">
+                    <connections>
+                        <outlet property="delegate" destination="vXZ-lx-hvc" id="IFM-nG-aID"/>
+                        <outlet property="searchContentsController" destination="vXZ-lx-hvc" id="tsE-Xj-cFa"/>
+                        <outlet property="searchResultsDataSource" destination="vXZ-lx-hvc" id="Qq9-eJ-d0W"/>
+                        <outlet property="searchResultsDelegate" destination="vXZ-lx-hvc" id="Ccy-WU-TgJ"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="628" y="-209"/>
         </scene>

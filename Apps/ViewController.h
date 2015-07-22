@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController <UITableViewDataSource>
+@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
-@property (weak, nonatomic) IBOutlet UITableView* tableView;
+@property IBOutlet UITableView *tableView;
 
 @end
 

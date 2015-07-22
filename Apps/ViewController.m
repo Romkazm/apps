@@ -8,10 +8,12 @@
 
 #import "ViewController.h"
 #import "AFNetworking.h"
+#import "UIKit+AFNetworking.h"
 
 @interface ViewController ()
 
 @property NSArray *apps;
+@property NSMutableArray *filteredApps;
 
 @end
 
@@ -50,6 +52,7 @@
         
         self.apps = [[responseObject objectForKey:@"feed"] objectForKey:@"entry"];
         
+        self.filteredApps = [NSMutableArray arrayWithArray:self.apps];
         [self.tableView reloadData];
         
     } failure:^(AFHTTPRequestOperation * operation, NSError * error) {
@@ -60,11 +63,36 @@
 
 }
 
+- (void)filterAppsWithString:(NSString *)string {
+
+    self.filteredApps = [NSMutableArray array];
+    
+    for (int i = 0; i < [self.apps count]; i++) {
+    
+        NSString *appTitle = [[[self.apps objectAtIndex:i] objectForKey:@"title"] objectForKey:@"label"];
+        if ([appTitle rangeOfString:string].location != NSNotFound) {
+        
+            [self.filteredApps addObject:[self.apps objectAtIndex:i]];
+        
+        }
+    
+    }
+
+}
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
+    
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    return [self.apps count];
+    return [self.filteredApps count];
 
 }
 
@@ -78,13 +106,62 @@
     
     }
     
-//    cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-//    cell.textLabel.numberOfLines = 1;
-    cell.textLabel.text = [NSString stringWithFormat:@"%lu. %@", indexPath.row + 1, [[[self.apps objectAtIndex:indexPath.row] objectForKey:@"title"] objectForKey:@"label"]];
-    cell.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[[[[self.apps objectAtIndex:indexPath.row] objectForKey:@"im:image"] objectAtIndex:2] objectForKey:@"label"]]]];
+    NSDictionary *app = [self.filteredApps objectAtIndex:indexPath.row];
+    NSString *appTitle = [[app objectForKey:@"title"] objectForKey:@"label"];
+    NSURL *imageURL = [NSURL URLWithString:[[[app objectForKey:@"im:image"] objectAtIndex:2] objectForKey:@"label"]];
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"%lu. %@", [self.apps indexOfObject:app] + 1, appTitle];
+    [cell.imageView setImageWithURL:imageURL placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
     
     return cell;
 
 }
 
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+
+    [searchBar setShowsCancelButton:YES animated:YES];
+
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+
+    [searchBar resignFirstResponder];
+    [searchBar setShowsCancelButton:NO animated:YES];
+    self.filteredApps = [NSMutableArray arrayWithArray:self.apps];
+    [self.tableView reloadData];
+
+}
+
+- (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+
+    [searchBar resignFirstResponder];
+    [searchBar setShowsCancelButton:NO animated:YES];
+    [self filterAppsWithString:searchBar.text];
+    [self.tableView reloadData];
+
+}
+
+- (void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+
+    [self filterAppsWithString:searchText];
+    [self.tableView reloadData];
+
+}
+
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
